@@ -1811,10 +1811,14 @@ def remove_thinking_tags(text: str) -> str:
     # Also remove self-closing thinking tags
     text = re.sub(r'<(\w*think\w*)[^>]*/>', '', text, flags=re.IGNORECASE)
     
+    # Also remove stray/orphan closing tags (e.g. </think>, </thinking>)
+    text = re.sub(r'.*?</\w*think\w*>', '', text, flags=re.DOTALL | re.IGNORECASE)
+    
     # Clean up extra whitespace
     text = re.sub(r'\n\s*\n', '\n\n', text)
     text = text.strip()
     
+    return text
     return text
 
 def clean_malformed_emojis(text: str, guild: discord.Guild = None) -> str:
@@ -3209,7 +3213,9 @@ Here is a relevant memory of a past conversation. It can be empty, if none was r
 
 Here are some important rules you must always follow:
 - Always stay in character.
+- Only reply to the person you're responding to.
 - Never respond or roleplay for others.
+- Never repeat yourself. Progress the conversation forward in a natural way.
 - Actively participate in conversations, ask follow-up questions, share anecdotes, shift topics, and have fun."""
 
     # Add NSFW section if enabled
@@ -5572,8 +5578,8 @@ async def create_personality(interaction: discord.Interaction, name: str, displa
         await interaction.followup.send("Display name must be between 2 and 64 characters.")
         return
     
-    if not (10 <= len(personality_prompt) <= 2000):
-        await interaction.followup.send("Personality prompt must be between 10 and 2000 characters.")
+    if not (10 <= len(personality_prompt) <= 4000):
+        await interaction.followup.send("Personality prompt must be between 10 and 4000 characters.")
         return
     
     clean_name = name.lower().replace(" ", "_")
@@ -5743,8 +5749,8 @@ async def edit_personality(interaction: discord.Interaction, personality_name: s
         updated_fields.append(f"Display name → {display_name}")
     
     if personality_prompt is not None:
-        if not (10 <= len(personality_prompt) <= 2000):
-            await interaction.followup.send("Personality prompt must be between 10 and 2000 characters.")
+        if not (10 <= len(personality_prompt) <= 4000):
+            await interaction.followup.send("Personality prompt must be between 10 and 4000 characters.")
             return
         custom_personalities[interaction.guild.id][clean_name]["prompt"] = personality_prompt
         prompt_preview = personality_prompt[:50] + ('...' if len(personality_prompt) > 50 else '')
