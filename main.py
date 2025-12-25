@@ -1462,7 +1462,7 @@ class RequestQueue:
             async with self.locks[channel_id]:
                 self.processing[channel_id] = False
     
-    async def _process_single_request(self, channel_id: int, request: dict):
+async def _process_single_request(self, channel_id: int, request: dict):
         """Process a single request with proper context"""
         # print(f"DEBUG: _process_single_request called for channel {channel_id}, content={repr(request.get('content'))}")
         try:
@@ -1482,9 +1482,9 @@ class RequestQueue:
                 
                 # Load history from Discord for all server channels (not DMs)
                 # This ensures the bot always has the complete conversation context
-                # Pass the triggering message so it can be excluded from the history load
                 if not is_dm:
-                    await load_channel_history_from_discord(message.channel, guild, channel_id, exclude_message_id=message.id)
+                    # UPDATED: Removed exclude_message_id argument
+                    await load_channel_history_from_discord(message.channel, guild, channel_id)
                 
                 # Add the user's message to history
                 await add_to_history(channel_id, "user", content, user_id, guild.id if guild else None, attachments, user_name, reply_to=reply_to_name)
@@ -2815,7 +2815,7 @@ async def add_to_history(channel_id: int, role: str, content: str, user_id: int 
 
     return message_content
 
-async def load_channel_history_from_discord(channel: discord.TextChannel, guild: discord.Guild, channel_id: int, exclude_message_id: int = None):
+async def load_channel_history_from_discord(channel: discord.TextChannel, guild: discord.Guild, channel_id: int):
     """Load recent channel history from Discord for context when bot is mentioned in non-autonomous channels"""
     try:
         print(f"Loading channel history from Discord for channel {channel.name} (ID: {channel_id})...")
@@ -2830,10 +2830,6 @@ async def load_channel_history_from_discord(channel: discord.TextChannel, guild:
         # Collect recent messages (up to the limit)
         temp_messages = []
         async for message in channel.history(limit=max_history_length + 10):  # Fetch extra to account for filtering
-            # Skip the triggering message (it will be added separately with proper formatting)
-            if exclude_message_id and message.id == exclude_message_id:
-                continue
-                
             # Skip messages from this bot to avoid adding our own responses to history
             if message.author == client.user:
                 continue
