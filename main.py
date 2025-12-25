@@ -1462,7 +1462,7 @@ class RequestQueue:
             async with self.locks[channel_id]:
                 self.processing[channel_id] = False
     
-async def _process_single_request(self, channel_id: int, request: dict):
+    async def _process_single_request(self, channel_id: int, request: dict):
         """Process a single request with proper context"""
         # print(f"DEBUG: _process_single_request called for channel {channel_id}, content={repr(request.get('content'))}")
         try:
