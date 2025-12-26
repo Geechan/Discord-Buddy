@@ -3213,10 +3213,10 @@ Here is a relevant memory of a past conversation. It can be empty, if none was r
 
 Here are some important rules you must always follow:
 - Always stay in character.
-- Only reply to the person you're responding to.
 - Never respond or roleplay for others.
-- Never repeat yourself. Progress the conversation forward in a natural way.
-- Actively participate in conversations, ask follow-up questions, share anecdotes, shift topics, and have fun."""
+- Only address one, highly relevant topic at a time. Stay focused so you avoid older, irrelevant discussion.
+- Avoid repeating what you've already said.
+- Actively participate in conversations, ask follow-up questions, share anecdotes, offer follow-up topics, and have fun."""
 
     # Add NSFW section if enabled
     if nsfw_enabled:
@@ -3461,11 +3461,11 @@ async def generate_response(channel_id: int, user_message: str, guild: discord.G
         if format_style in custom_format_instructions:
             format_instructions = custom_format_instructions[format_style]
         elif format_style == "conversational":
-            format_instructions = "In your response, adapt internet language. Never use em-dashes or asterisks. Do not repeat after yourself or others. Keep your response length up to one or two sentences. You may reply with just one word or emoji."
+            format_instructions = "In your response, adapt internet language. Never use em-dashes or asterisks. Do not repeat after yourself or others. Keep your response length up to one or two sentences. Only address the latest, most relevant topic at a time. You may reply with just one word or emoji."
         elif format_style == "asterisk":
-            format_instructions = "In your response, write asterisk roleplay. Enclose actions and descriptions in *asterisks*, keeping dialogues as plain text. Never use em-dashes or nested asterisks. Do not repeat after yourself or others. Be creative. Keep your response length between one and three short paragraphs."
+            format_instructions = "In your response, write asterisk roleplay. Enclose actions and descriptions in *asterisks*, keeping dialogues as plain text. Never use em-dashes or nested asterisks.  after yourself or others. Be creative. Keep your response length between one and three short paragraphs."
         elif format_style == "narrative":
-            format_instructions = "In your response, write narrative roleplay. Apply plain text for narration and \"quotation marks\" for dialogues. Never use em-dashes or asterisks. Do not repeat after yourself or others. Be creative. Show, don't tell. Keep your response length between one and three paragraphs."
+            format_instructions = "In your response, write narrative roleplay. Apply plain text for narration and \"quotation marks\" for dialogues. Never use em-dashes or asterisks.  after yourself or others. Be creative. Show, don't tell. Keep your response length between one and three paragraphs."
 
         # Append the system messages to complete the structure
         system_message_content = f"""</history>
